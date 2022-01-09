@@ -1,0 +1,61 @@
+#include <IRremote.h>
+#include<Servo.h> 
+Servo servomotor;                                                                      // creating an object servomotor under class servo
+int servo = 11;                                                                         // assigning servo to pin_2
+
+const int Remote = 15;
+IRrecv irrecv(Remote);
+decode_results remote_value;
+
+void setup(){
+  Serial.begin(9600);
+  irrecv.enableIRIn();
+  pinMode(5, OUTPUT);
+  pinMode(6, OUTPUT);
+ pinMode(7,OUTPUT);
+ pinMode(3,OUTPUT);
+  servomotor.attach(servo);            // POWER SUPPLY PIN FOR SERVO MOTOR
+}
+
+void loop(){
+  if (irrecv.decode(&remote_value)){
+        Serial.println(remote_value.value, HEX);
+         switch(remote_value.value)
+         {
+          case 0x1FEB04F:                              //5
+          digitalWrite(5,HIGH);
+          digitalWrite(6,HIGH);
+          digitalWrite(7,HIGH);
+          break;
+          case 0x1FEF00F:                               //8
+          if(digitalRead(5)==0 && digitalRead(11)==0 ){
+          digitalWrite(3,HIGH);
+          }
+          break;
+          case 0x1FE9867:                               //9
+          digitalWrite(3,LOW);
+          break;
+          case 0x1FE708F:                               //6
+          digitalWrite(5,LOW);
+          digitalWrite(6,LOW);
+          digitalWrite(7,LOW);
+          break;
+          case 0x1FE30CF:
+          
+  int servo99 =55;                            //  Servo initialization
+  int servo98=0;
+  for(int servo98=0; servo98<1 ;servo98++)     //  no. of times servo needed to be operated !
+  {
+  for(servo99 =55; servo99 <95;servo99++)      //  Servo execution FOR loop
+{servomotor.write(servo99);
+delay(25);}
+for(servo99=95;servo99>=55;servo99--)
+{servomotor.write(servo99);
+delay(25);} 
+  }
+
+          break;
+          }
+        irrecv.resume();
+  }
+}
